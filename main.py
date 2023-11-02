@@ -151,8 +151,8 @@ def main():
     category_index = label_map_util.create_category_index(categories)
 
     # Streamlit initialization
-    st.title("Object Detection")
-    st.sidebar.title("Object Detection")
+    st.title("SPT Recycle Bank")
+    st.sidebar.title("Waste Classifier")
     ## Select classes to be detected by the model
     classes_names = [value['name'] for value in category_index.values()]
     classes_names.sort()
