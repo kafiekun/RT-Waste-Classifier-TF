@@ -212,7 +212,6 @@ def main():
 
     print("Ending resources")
     st.text("Camera not detected")
-    cv2.destroyAllWindows()
     video_thread.stop()
     sys.exit()
 

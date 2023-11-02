@@ -1,4 +1,5 @@
 import cv2
+from streamlit_webrtc import webrtc_streamer
 import time
 import threading
 
@@ -26,7 +27,7 @@ class VideoStream:
 
         """
         self.name = name
-        self.stream = cv2.VideoCapture(src)
+        self.stream = webrtc_streamer(key="sample")(src)
         self.real_time = real_time
         self.frame_rate = self.stream.get(cv2.CAP_PROP_FPS)
         self.grabbed, self.frame = self.stream.read()
