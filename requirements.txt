@@ -86,8 +86,7 @@ toolz
 tornado                            
 typing_extensions                  
 tzdata                              
-tzlocal                          
-urllib                             
+tzlocal                                                      
 validators                          
 watchdog                           
 Werkzeug                           
