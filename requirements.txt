@@ -50,7 +50,7 @@ packaging
 pandas                             
 Pillow                              
 pip                                 
-protobuf                            
+protobuf==3.19                          
 pyarrow                             
 pyasn1                             
 pyasn1-modules                     
