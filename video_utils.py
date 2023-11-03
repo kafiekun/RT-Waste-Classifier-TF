@@ -70,7 +70,7 @@ class VideoStream:
 class WebcamVideoStream:
     # Opens a video stream with OpenCV from a wired webcam in a thread
     def __init__(self, src, shape=None, name="WebcamVideoStream"):
-        webrtc_streamer(key="sample")(src)
+        webrtc_streamer(key="sample")
         """Initialize the video stream from a video
 
         Args:
