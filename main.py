@@ -237,7 +237,7 @@ def app_object_detection():
     media_stream_constraints={
         "video": True,
         "audio": True,
-    },,
+    },
         video_processor_factory=Video,
         async_processing=True,
     )
