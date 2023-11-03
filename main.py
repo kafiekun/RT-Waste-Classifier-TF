@@ -215,7 +215,7 @@ def main():
         
                     # if cv2.waitKey(1) & 0xFF == ord('q'):
                     #     break    
-    result_queue: "queue.Queue[List[Detection]]" = Queue()
+    # result_queue: "queue.Queue[List[Detection]]" = Queue()
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     image = frame.to_ndarray(format="bgr24")
