@@ -180,7 +180,7 @@ def main():
     ##video_thread.start()
 
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-    image = frame.to_ndarray(format="bgr24")
+        image = frame.to_ndarray(format="bgr24")
 
     # Run inference
     blob = cv2.dnn.blobFromImage(
