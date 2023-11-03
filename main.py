@@ -196,12 +196,10 @@ def main():
         with detection_graph.as_default():
             with tf.compat.v1.Session(graph=detection_graph) as sess:
                 while not video_thread.stopped():
-                    # Camera detection loop
                     frame = video_thread.read()
                     if frame is None:
                         print("Frame stream interrupted")
                         break
-                    # Change color gammut to feed the frame into the network
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     output = run_inference_for_single_image(frame, sess, 
                         detection_graph)
@@ -209,27 +207,20 @@ def main():
                         classes_to_detect, category_index)
                     processed_image = visualize_results(frame, output, 
                         category_index)
-        
-                    # Display the image with the detections in the Streamlit app
                     img_placeholder.image(processed_image)
                     
-                    #cv2.imshow('Video', cv2.cvtColor(processed_image, cv2.COLOR_BGR2RGB))
-        
-                    # if cv2.waitKey(1) & 0xFF == ord('q'):
-                    #     break    
-
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     image = frame.to_ndarray(format="bgr24")
-
+    
     # Run inference
     blob = cv2.dnn.blobFromImage(
         cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5
     )
     net.setInput(blob)
     output = net.forward()
-
+    
     h, w = image.shape[:2]
-
+    
     # Convert the output array into a structured form.
     output = output.squeeze()  # (1, 1, N, 7) -> (N, 7)
     output = output[output[:, 2] >= score_threshold]
@@ -242,13 +233,13 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         )
         for detection in output
     ]
-
+    
     # Render bounding boxes and captions
     for detection in detections:
         caption = f"{detection.label}: {round(detection.score * 100, 2)}%"
         color = COLORS[detection.class_id]
         xmin, ymin, xmax, ymax = detection.box.astype("int")
-
+    
         cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, 2)
         cv2.putText(
             image,
@@ -259,9 +250,9 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
             color,
             2,
         )
-
+    
     result_queue.put(detections)
-
+    
     return av.VideoFrame.from_ndarray(image, format="bgr24")
     
 webrtc_streamer(
