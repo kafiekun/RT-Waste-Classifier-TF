@@ -211,7 +211,7 @@ def main():
 
     print("Ending resources")
     st.text("Camera not detected")
-    video_thread.stop()
+    ##video_thread.stop()
     sys.exit()
 
 
