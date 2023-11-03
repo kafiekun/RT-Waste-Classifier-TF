@@ -34,8 +34,6 @@ WEBRTC_CLIENT_SETTINGS = ClientSettings(
 
 st.title("SPT Recycle Bank")
 
-path_to_ckpt = '{}/frozen_inference_graph.pb'.format(model_name)
-detection_graph = model_load_into_memory(path_to_ckpt)
 
 def model_load_into_memory(path_to_ckpt):
     detection_graph = tf.Graph()
@@ -187,6 +185,9 @@ def main():
         "Select which model to use", available_models)
     # Define holder for the processed image
     img_placeholder = st.empty()
+    #Load model
+    path_to_ckpt = '{}/frozen_inference_graph.pb'.format(model_name)
+    detection_graph = model_load_into_memory(path_to_ckpt)
     
     # Load video source into a thread
     video_source = available_cameras[cam_id]
