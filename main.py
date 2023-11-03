@@ -189,7 +189,7 @@ def main():
     ##video_thread = video_utils.WebcamVideoStream(video_source)
     ##video_thread.start()
 
-    result_queue: "queue.Queue[List[Detection]]" = queue.Queue()
+    result_queue: "Queue[List[Detection]]" = queue.Queue()
 
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
