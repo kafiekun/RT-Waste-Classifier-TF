@@ -249,20 +249,10 @@ if st.checkbox("Show the detected labels", value=True):
         # are not strictly synchronized.
         while True:
             result = result_queue.get()
-            labels_placeholder.table(result
+            labels_placeholder.table(result)
 
 
 webrtc_streamer(key="web", video_frame_callback=callback)
-    
-  
-    if KeyboardInterrupt:   
-        pass
-
-    print("Ending resources")
-    st.text("Camera not detected")
-    ##video_thread.stop()
-    sys.exit()
-
 
 if __name__ == '__main__':
     main()
