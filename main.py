@@ -182,8 +182,11 @@ def main():
     ##video_thread = video_utils.WebcamVideoStream(video_source)
     ##video_thread.start()
 
-    def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-        image = frame.to_ndarray(format="bgr24")
+    result_queue: "queue.Queue[List[Detection]]" = queue.Queue()
+
+
+def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+    image = frame.to_ndarray(format="bgr24")
 
     # Run inference
     blob = cv2.dnn.blobFromImage(
@@ -230,13 +233,13 @@ def main():
 
 
 webrtc_ctx = webrtc_streamer(
-    key="web",
+    key="object-detection",
     mode=WebRtcMode.SENDRECV,
     rtc_configuration={
-        video_frame_callback=video_frame_callback
         "iceServers": get_ice_servers(),
         "iceTransportPolicy": "relay",
     },
+    video_frame_callback=video_frame_callback,
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True,
 )
@@ -252,10 +255,7 @@ if st.checkbox("Show the detected labels", value=True):
         while True:
             result = result_queue.get()
             labels_placeholder.table(result)
-
-
-webrtc_streamer(key="web", video_frame_callback=callback)
-
+            
 if __name__ == '__main__':
     main()
     
