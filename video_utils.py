@@ -89,13 +89,12 @@ class WebcamVideoStream:
 
         """
         self.name = name
-        self.stream = webrtc_streamer(key="web")
+        self.stream = cv2.VideoCapture(key="web")
         self.shape = shape
         if self.shape is not None:
             self.stream.set(3, shape[0])
             self.stream.set(4, shape[1])
-        self.grabbed = self.stream.read()
-        self.frame = self.stream.read()
+        self.grabbed, self.frame = self.stream.read()
         self.lock = threading.Lock()
         self._stop_event = threading.Event()
     
