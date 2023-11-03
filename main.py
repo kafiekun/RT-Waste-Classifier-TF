@@ -13,11 +13,14 @@ from streamlit_webrtc import WebRtcMode, webrtc_streamer
 from sample_utils.turn import get_ice_servers
 import av
 import logging
-from queue import Queue, queue
+from queue import Queue
 from pathlib import Path
 from typing import List
 
-
+class Detection(NamedTuple):
+    class_id: int
+    label: str
+    score: float
 
 def model_load_into_memory(path_to_ckpt):
     detection_graph = tf.Graph()
