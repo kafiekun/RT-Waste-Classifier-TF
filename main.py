@@ -183,9 +183,9 @@ def main():
     try:
         with detection_graph.as_default():
             with tf.compat.v1.Session(graph=detection_graph) as sess:
-                while not video_thread.stopped():
+                ##while not video_thread.stopped():
                     # Camera detection loop
-                    frame = video_thread.read()
+                    ##frame = video_thread.read()
                     if frame is None:
                         print("Frame stream interrupted")
                         break
