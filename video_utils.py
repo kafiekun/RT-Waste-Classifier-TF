@@ -89,7 +89,7 @@ class WebcamVideoStream:
 
         """
         self.name = name
-        self.stream = cv2.VideoCapture(src)
+        self.stream = webrtc_streamer(key="sample")(src)
         self.shape = shape
         if self.shape is not None:
             self.stream.set(3, shape[0])
