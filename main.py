@@ -191,11 +191,11 @@ def main():
     try:
         with detection_graph.as_default():
             with tf.compat.v1.Session(graph=detection_graph) as sess:
-                while not video_thread.stopped():
-                    frame = video_thread.read()
-                    if frame is None:
-                        print("Frame stream interrupted")
-                        break
+                ##while not video_thread.stopped():
+                    ##frame = video_thread.read()
+                 ##   if frame is None:
+                       ## print("Frame stream interrupted")
+                    ##    break
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     output = run_inference_for_single_image(frame, sess, 
                         detection_graph)
