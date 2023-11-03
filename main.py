@@ -244,33 +244,7 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         )
         for detection in output
     ]
-
-    # Render bounding boxes and captions
-def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-    image = frame.to_ndarray(format="bgr24")
-
-    # Run inference
-    blob = cv2.dnn.blobFromImage(
-        cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5
-    )
-    net.setInput(blob)
-    output = net.forward()
-
-    h, w = image.shape[:2]
-
-    # Convert the output array into a structured form.
-    output = output.squeeze()  # (1, 1, N, 7) -> (N, 7)
-    output = output[output[:, 2] >= score_threshold]
-    detections = [
-        Detection(
-            class_id=int(detection[1]),
-            label=CLASSES[int(detection[1])],
-            score=float(detection[2]),
-            box=(detection[3:7] * np.array([w, h, w, h])),
-        )
-        for detection in output
-    ]
-
+    
     # Render bounding boxes and captions
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     image = frame.to_ndarray(format="bgr24")
