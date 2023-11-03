@@ -188,26 +188,7 @@ def main():
     # video_thread.start()
     result_queue: "queue.Queue[List[Detection]]" = Queue()
     
-def app_object_detection():
 
-    class Video(VideoProcessorBase):
-
-        def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
-            image = frame.to_ndarray(format="bgr24")
-
-            classes, scores, boxes = model.detect(
-                image, Conf_threshold, NMS_threshold)
-            for (classid, score, box) in zip(classes, scores, boxes):
-
-                color = COLORS[int(classid) % len(COLORS)]
-
-                label = "%s : %f" % (class_name[classid[0]], score)
-
-                cv2.rectangle(image, box, color, 1)
-                cv2.putText(image, label, (box[0], box[1]-10),
-                            cv2.FONT_HERSHEY_COMPLEX, 0.5, color, 1)
-
-            return av.VideoFrame.from_ndarray(image, format="bgr24")
 
     webrtc_streamer(
         key="object-detection",
