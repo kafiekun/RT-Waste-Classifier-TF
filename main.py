@@ -15,7 +15,7 @@ import av
 import logging
 from queue import Queue
 from pathlib import Path
-from typing import List
+from typing import List, NamedTuple
 
 class Detection(NamedTuple):
     class_id: int
