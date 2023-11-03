@@ -2,7 +2,6 @@ from pathlib import Path
 from object_detection.utils import label_map_util
 import visualization_utils as vis_util
 from object_detection.utils import ops as utils_ops
-
 import configparser
 import cv2
 import numpy as np
@@ -16,14 +15,11 @@ import logging
 from queue import Queue
 from pathlib import Path
 from typing import List, NamedTuple
-
 class Detection(NamedTuple):
     class_id: int
     label: str
     score: float
-
 st.title("SPT Recycle Bank")
-
 def model_load_into_memory(path_to_ckpt):
     detection_graph = tf.Graph()
     with detection_graph.as_default():
@@ -34,7 +30,6 @@ def model_load_into_memory(path_to_ckpt):
             tf.import_graph_def(od_graph_def, name='')
             
     return detection_graph
-
 def run_inference_for_single_image(image, sess, graph, class_id=None):
     """Feed forward an image into the object detection model.
     
@@ -83,7 +78,6 @@ def run_inference_for_single_image(image, sess, graph, class_id=None):
         tensor_dict['detection_masks'] = tf.expand_dims(detection_masks_reframed, 0)
         
     image_tensor = tf.compat.v1.get_default_graph().get_tensor_by_name('image_tensor:0')
-
     # Run inference
     output_dict = sess.run(tensor_dict,
                            feed_dict={image_tensor: np.expand_dims(image, 0)})
@@ -95,9 +89,7 @@ def run_inference_for_single_image(image, sess, graph, class_id=None):
     output_dict['detection_scores'] = output_dict['detection_scores'][0]
     if 'detection_masks' in output_dict:
         output_dict['detection_masks'] = output_dict['detection_masks'][0].astype(np.float32)
-
     return output_dict
-
 def discriminate_class(output_dict, classes_to_detect, category_index):
     """Keeps the classes of interest of the frame and ignores the others
     
@@ -135,27 +127,18 @@ def visualize_results(image, output_dict, category_index):
         image (ndarray): Visualization of the results form above.
         
     """
-    try:
-        with detection_graph.as_default():
-            with tf.compat.v1.Session(graph=detection_graph) as sess:
-                while not video_thread.stopped():
-                    frame = video_thread.read()
-                    if frame is None:
-                        print("Frame stream interrupted")
-                        break
-                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    output = run_inference_for_single_image(frame, sess, 
-                        detection_graph)
-                    output = discriminate_class(output, 
-                        classes_to_detect, category_index)
-                    processed_image = visualize_results(frame, output, 
-                        category_index)
-                    img_placeholder.image(processed_image)
-    except KeyboardInterrupt:   
-        pass
+    vis_util.visualize_boxes_and_labels_on_image_array(
+            image,
+            output_dict['detection_boxes'],
+            output_dict['detection_classes'],
+            output_dict['detection_scores'],
+            category_index,
+            instance_masks=output_dict.get('detection_masks'),
+            use_normalized_coordinates=True,
+            line_thickness=4)
+    
     return image
-
-
+    
 def main():
     # Initialization
     ## Load the configuration variables from 'config.ini'
@@ -168,7 +151,6 @@ def main():
     categories = label_map_util.convert_label_map_to_categories(label_map, 
         max_num_classes=num_classes, use_display_name=True)
     category_index = label_map_util.create_category_index(categories)
-
     # Streamlit initialization
     st.title("kys")
     st.sidebar.title("Waste Classifier")
@@ -188,7 +170,6 @@ def main():
         "Select which model to use", available_models)
     # Define holder for the processed image
     img_placeholder = st.empty()
-
     # Model load
     path_to_ckpt = '{}/frozen_inference_graph.pb'.format(model_name)
     detection_graph = model_load_into_memory(path_to_ckpt)
@@ -199,8 +180,7 @@ def main():
     ##video_thread = video_utils.WebcamVideoStream(video_source)
     ##video_thread.start()
     result_queue: "queue.Queue[List[Detection]]" = Queue()
-        
-def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+    
     try:
         with detection_graph.as_default():
             with tf.compat.v1.Session(graph=detection_graph) as sess:
@@ -217,9 +197,52 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
                     processed_image = visualize_results(frame, output, 
                         category_index)
                     img_placeholder.image(processed_image)
+
     except KeyboardInterrupt:   
         pass
-        
+
+def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+    image = frame.to_ndarray(format="bgr24")
+
+    # Run inference
+    blob = cv2.dnn.blobFromImage(
+        cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5
+    )
+    net.setInput(blob)
+    output = net.forward()
+    
+    h, w = image.shape[:2]
+    
+    # Convert the output array into a structured form.
+    output = output.squeeze()  # (1, 1, N, 7) -> (N, 7)
+    output = output[output[:, 2] >= score_threshold]
+    detections = [
+        Detection(
+            class_id=int(detection[1]),
+            label=CLASSES[int(detection[1])],
+            score=float(detection[2]),
+            box=(detection[3:7] * np.array([w, h, w, h])),
+        )
+        for detection in output
+    ]
+    
+    # Render bounding boxes and captions
+    for detection in detections:
+        caption = f"{detection.label}: {round(detection.score * 100, 2)}%"
+        color = COLORS[detection.class_id]
+        xmin, ymin, xmax, ymax = detection.box.astype("int")
+    
+        cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, 2)
+        cv2.putText(
+            image,
+            caption,
+            (xmin, ymin - 15 if ymin - 15 > 15 else ymin + 15),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            color,
+            2,
+        )
+    
     result_queue.put(detections)
     
     return av.VideoFrame.from_ndarray(image, format="bgr24")
