@@ -239,14 +239,11 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     return av.VideoFrame.from_ndarray(image, format="bgr24")
 
 
-webrtc_ctx = webrtc_streamer(
-    key="object-detection",
+webrtc_streamer(
+    key="web",
     mode=WebRtcMode.SENDRECV,
-      rtc_configuration={
-        "iceServers": get_ice_servers(),
-        "iceTransportPolicy": "relay",
-    },
-    video_frame_callback=video_frame_callback,
+    rtc_configuration={"iceServers": get_ice_servers()},
+    video_frame_callback=callback,
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True,
 )
