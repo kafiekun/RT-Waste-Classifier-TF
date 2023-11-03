@@ -8,17 +8,30 @@ import numpy as np
 import tensorflow as tf
 import sys
 import streamlit as st
-from streamlit_webrtc import WebRtcMode, webrtc_streamer
+from streamlit_webrtc import (
+    AudioProcessorBase,
+    ClientSettings,
+    VideoProcessorBase,
+    WebRtcMode,
+    webrtc_streamer,
+)
 from sample_utils.turn import get_ice_servers
 import av
 import logging
 from queue import Queue
 from pathlib import Path
-from typing import List, NamedTuple
-class Detection(NamedTuple):
-    class_id: int
-    label: str
-    score: float
+from typing import List
+
+
+WEBRTC_CLIENT_SETTINGS = ClientSettings(
+    rtc_configuration={"iceServers": [
+        {"urls": ["stun:stun.l.google.com:19302"]}]},
+    media_stream_constraints={
+        "video": True,
+        "audio": True,
+    },
+
+
 st.title("SPT Recycle Bank")
 def model_load_into_memory(path_to_ckpt):
     detection_graph = tf.Graph()
@@ -177,8 +190,8 @@ def main():
     # Load video source into a thread
     video_source = available_cameras[cam_id]
     ## Start video thread
-    video_thread = webrtc_streamer
-    video_thread.start()
+    # video_thread = webrtc_streamer
+    # video_thread.start()
     result_queue: "queue.Queue[List[Detection]]" = Queue()
     
     try:
@@ -201,60 +214,35 @@ def main():
     except KeyboardInterrupt:   
         pass
 
-def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-    image = frame.to_ndarray(format="bgr24")
+def app_object_detection():
 
-    # Run inference
-    blob = cv2.dnn.blobFromImage(
-        cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5
+    class Video(VideoProcessorBase):
+
+        def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
+            image = frame.to_ndarray(format="bgr24")
+
+            classes, scores, boxes = model.detect(
+                image, Conf_threshold, NMS_threshold)
+            for (classid, score, box) in zip(classes, scores, boxes):
+
+                color = COLORS[int(classid) % len(COLORS)]
+
+                label = "%s : %f" % (class_name[classid[0]], score)
+
+                cv2.rectangle(image, box, color, 1)
+                cv2.putText(image, label, (box[0], box[1]-10),
+                            cv2.FONT_HERSHEY_COMPLEX, 0.5, color, 1)
+
+            return av.VideoFrame.from_ndarray(image, format="bgr24")
+
+    webrtc_ctx = webrtc_streamer(
+        key="object-detection",
+        mode=WebRtcMode.SENDRECV,
+        client_settings=WEBRTC_CLIENT_SETTINGS,
+        video_processor_factory=Video,
+        async_processing=True,
     )
-    net.setInput(blob)
-    output = net.forward()
-    
-    h, w = image.shape[:2]
-    
-    # Convert the output array into a structured form.
-    output = output.squeeze()  # (1, 1, N, 7) -> (N, 7)
-    output = output[output[:, 2] >= score_threshold]
-    detections = [
-        Detection(
-            class_id=int(detection[1]),
-            label=CLASSES[int(detection[1])],
-            score=float(detection[2]),
-            box=(detection[3:7] * np.array([w, h, w, h])),
-        )
-        for detection in output
-    ]
-    
-    # Render bounding boxes and captions
-    for detection in detections:
-        caption = f"{detection.label}: {round(detection.score * 100, 2)}%"
-        color = COLORS[detection.class_id]
-        xmin, ymin, xmax, ymax = detection.box.astype("int")
-    
-        cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, 2)
-        cv2.putText(
-            image,
-            caption,
-            (xmin, ymin - 15 if ymin - 15 > 15 else ymin + 15),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            color,
-            2,
-        )
-    
-    result_queue.put(detections)
-    
-    return av.VideoFrame.from_ndarray(image, format="bgr24")
-    
-def webrtc_streamer(
-    key="web",
-    mode=WebRtcMode.SENDRECV,
-    rtc_configuration={"iceServers": get_ice_servers()},
-    video_frame_callback=video_frame_callback,
-    media_stream_constraints={"video": True, "audio": False},
-    async_processing=True,
-)
+
             
 if __name__ == '__main__':
     main()
