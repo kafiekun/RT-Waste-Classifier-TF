@@ -7,7 +7,6 @@ import configparser
 import cv2
 import numpy as np
 import tensorflow as tf
-import video_utils
 import sys
 import streamlit as st
 
