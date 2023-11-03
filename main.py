@@ -180,7 +180,7 @@ def main():
     ##video_thread.start()
     
   
-    except KeyboardInterrupt:   
+    if KeyboardInterrupt:   
         pass
 
     print("Ending resources")
