@@ -179,31 +179,7 @@ def main():
     ##video_thread = video_utils.WebcamVideoStream(video_source)
     ##video_thread.start()
     
-    # Detection code
-    try:
-        with detection_graph.as_default():
-            with tf.compat.v1.Session(graph=detection_graph) as sess:
-                ##while not video_thread.stopped():
-                    # Camera detection loop
-                    ##frame = video_thread.read()
-                        ##break
-                    # Change color gammut to feed the frame into the network
-                frame = cv2.cvtColor(frames, cv2.COLOR_BGR2RGB)
-                output = run_inference_for_single_image(frame, sess, 
-                        detection_graph)
-                output = discriminate_class(output, 
-                        classes_to_detect, category_index)
-                processed_image = visualize_results(frame, output, 
-                        category_index)
-
-                    # Display the image with the detections in the Streamlit app
-                img_placeholder.image(processed_image)
-                    
-                    #cv2.imshow('Video', cv2.cvtColor(processed_image, cv2.COLOR_BGR2RGB))
-
-                    # if cv2.waitKey(1) & 0xFF == ord('q'):
-                    #     break
-    
+  
     except KeyboardInterrupt:   
         pass
 
