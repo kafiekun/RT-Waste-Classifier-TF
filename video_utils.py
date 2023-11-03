@@ -16,7 +16,7 @@ def callback(frame):
     return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 
-webrtc_streamer(key="Web", video_frame_callback=callback)
+webrtc_streamer(key="web", video_frame_callback=callback)
 
 class VideoStream:
     # Opens a video with OpenCV from file in a thread
@@ -104,7 +104,7 @@ class WebcamVideoStream:
 
         """
         self.name = name
-        self.stream = cv2.VideoCapture(key="web")
+        self.stream = webrtc_streamer(key="web")
         self.shape = shape
         if self.shape is not None:
             self.stream.set(3, shape[0])
