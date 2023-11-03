@@ -33,7 +33,12 @@ class VideoStream:
         self.grabbed, self.frame = self.stream.read()
         self.lock = threading.Lock()
         self._stop_event = threading.Event()
-
+    
+    def read(self):
+        if self.stopped():
+            print("Video ended")
+        return self.frame
+        
     def start(self):
         # Start the thread to read frames from the video stream with target function update
         threading.Thread(target=self.update, daemon=True, name=self.name).start()
@@ -52,11 +57,6 @@ class VideoStream:
             else:
                 return
         self.stop()
-    
-    def read(self):
-        if self.stopped():
-            print("Video ended")
-        return self.frame
 
     def stop(self):
         self.lock.acquire()
@@ -94,10 +94,13 @@ class WebcamVideoStream:
         if self.shape is not None:
             self.stream.set(3, shape[0])
             self.stream.set(4, shape[1])
-        self.grabbed, self.frame = self.read()
+        self.grabbed, self.frame = self.stream.read()
         self.lock = threading.Lock()
         self._stop_event = threading.Event()
-
+    
+    def read(self):
+        return self.frame
+        
     def start(self):
         # Start the thread to read frames from the video stream
         threading.Thread(target=self.update, daemon=True, name=self.name).start()
@@ -111,9 +114,6 @@ class WebcamVideoStream:
             else:
                 return
         self.stopped
-    
-    def read(self):
-        return self.frame
 
     def stop(self):
         self.lock.acquire()
