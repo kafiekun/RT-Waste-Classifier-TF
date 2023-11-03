@@ -197,7 +197,7 @@ def main():
                         category_index)
 
                     # Display the image with the detections in the Streamlit app
-                    img_placeholder.image(processed_image)
+                img_placeholder.image(processed_image)
                     
                     #cv2.imshow('Video', cv2.cvtColor(processed_image, cv2.COLOR_BGR2RGB))
 
