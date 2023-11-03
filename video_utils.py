@@ -27,7 +27,7 @@ class VideoStream:
 
         """
         self.name = name
-        self.stream = webrtc_streamer(key="sample")
+        self.stream = webrtc_streamer(key="web")
         self.real_time = real_time
         self.frame_rate = self.stream.get(cv2.CAP_PROP_FPS)
         self.grabbed, self.frame = self.stream.read()
@@ -70,7 +70,6 @@ class VideoStream:
 class WebcamVideoStream:
     # Opens a video stream with OpenCV from a wired webcam in a thread
     def __init__(self, src, shape=None, name="WebcamVideoStream"):
-        webrtc_streamer(key="Webcams")
         """Initialize the video stream from a video
 
         Args:
@@ -90,7 +89,7 @@ class WebcamVideoStream:
 
         """
         self.name = name
-        self.stream = webrtc_streamer(key="sample")
+        self.stream = webrtc_streamer(key="web")
         self.shape = shape
         if self.shape is not None:
             self.stream.set(3, shape[0])
