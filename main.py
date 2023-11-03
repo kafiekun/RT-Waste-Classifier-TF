@@ -233,6 +233,7 @@ webrtc_ctx = webrtc_streamer(
     key="web",
     mode=WebRtcMode.SENDRECV,
     rtc_configuration={
+        video_frame_callback=video_frame_callback
         "iceServers": get_ice_servers(),
         "iceTransportPolicy": "relay",
     },
