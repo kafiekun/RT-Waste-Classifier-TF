@@ -229,7 +229,7 @@ def app_object_detection():
 
             return av.VideoFrame.from_ndarray(image, format="bgr24")
 
-    webrtc_ctx = webrtc_streamer(
+    webrtc_streamer(
         key="object-detection",
         mode=WebRtcMode.SENDRECV,
         rtc_configuration={"iceServers": [
