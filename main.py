@@ -208,7 +208,9 @@ def main():
                     processed_image = visualize_results(frame, output, 
                         category_index)
                     img_placeholder.image(processed_image)
-                    
+    except KeyboardInterrupt:   
+        pass
+        
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     image = frame.to_ndarray(format="bgr24")
     
