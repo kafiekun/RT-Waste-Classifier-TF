@@ -190,6 +190,8 @@ def main():
     ## Start video thread
     ##video_thread = video_utils.WebcamVideoStream(video_source)
     ##video_thread.start()
+    result_queue: "queue.Queue[List[Detection]]" = Queue()
+    
     try:
         with detection_graph.as_default():
             with tf.compat.v1.Session(graph=detection_graph) as sess:
@@ -215,7 +217,6 @@ def main():
         
                     # if cv2.waitKey(1) & 0xFF == ord('q'):
                     #     break    
-    # result_queue: "queue.Queue[List[Detection]]" = Queue()
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     image = frame.to_ndarray(format="bgr24")
