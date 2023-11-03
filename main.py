@@ -243,7 +243,7 @@ webrtc_streamer(
     key="web",
     mode=WebRtcMode.SENDRECV,
     rtc_configuration={"iceServers": get_ice_servers()},
-    video_frame_callback=callback,
+    video_frame_callback=video_frame_callback,
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True,
 )
