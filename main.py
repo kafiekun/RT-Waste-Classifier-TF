@@ -188,8 +188,8 @@ def main():
                     ##frame = video_thread.read()
                         ##break
                     # Change color gammut to feed the frame into the network
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                if frame is None:
+                        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    if frame is None:
                         print("Frame stream interrupted")
                     output = run_inference_for_single_image(frame, sess, 
                         detection_graph)
