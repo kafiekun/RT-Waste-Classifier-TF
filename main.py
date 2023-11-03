@@ -22,7 +22,7 @@ class Detection(NamedTuple):
     label: str
     score: float
 
-st.title(SPT Recycle Bank)
+st.title("SPT Recycle Bank")
 
 def model_load_into_memory(path_to_ckpt):
     detection_graph = tf.Graph()
