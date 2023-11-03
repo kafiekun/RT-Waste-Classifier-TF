@@ -177,8 +177,8 @@ def main():
     # Load video source into a thread
     video_source = available_cameras[cam_id]
     ## Start video thread
-    ##video_thread = video_utils.WebcamVideoStream(video_source)
-    ##video_thread.start()
+    video_thread = webrtc_streamer
+    video_thread.start()
     result_queue: "queue.Queue[List[Detection]]" = Queue()
     
     try:
@@ -247,7 +247,7 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     
     return av.VideoFrame.from_ndarray(image, format="bgr24")
     
-webrtc_streamer(
+def webrtc_streamer(
     key="web",
     mode=WebRtcMode.SENDRECV,
     rtc_configuration={"iceServers": get_ice_servers()},
