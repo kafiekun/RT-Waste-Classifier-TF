@@ -188,7 +188,7 @@ def main():
                     ##frame = video_thread.read()
                         ##break
                     # Change color gammut to feed the frame into the network
-                frame = cv2.cvtColor(cv2.COLOR_BGR2RGB)
+                frame = cv2.cvtColor(frames, cv2.COLOR_BGR2RGB)
                 output = run_inference_for_single_image(frame, sess, 
                         detection_graph)
                 output = discriminate_class(output, 
