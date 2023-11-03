@@ -15,7 +15,7 @@ import av
 import logging
 import queue
 from pathlib import Path
-from typing import List, NamedTuple
+from typing import List
 
 
 
