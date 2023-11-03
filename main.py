@@ -9,7 +9,7 @@ import numpy as np
 import tensorflow as tf
 import sys
 import streamlit as st
-import streamlit_webrtc as webrtc_streamer
+from streamlit_webrtc import webrtc_streamer
 
 
 
