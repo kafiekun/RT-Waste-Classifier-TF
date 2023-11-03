@@ -188,11 +188,6 @@ def main():
     # video_thread.start()
     result_queue: "queue.Queue[List[Detection]]" = Queue()
     
-
-
-    except KeyboardInterrupt:   
-        pass
-
 def app_object_detection():
 
     class Video(VideoProcessorBase):
