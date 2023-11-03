@@ -94,7 +94,7 @@ class WebcamVideoStream:
         if self.shape is not None:
             self.stream.set(3, shape[0])
             self.stream.set(4, shape[1])
-        self.grabbed, self.frame = self.stream.read()
+        self.grabbed, self.frame = self.read()
         self.lock = threading.Lock()
         self._stop_event = threading.Event()
 
