@@ -27,7 +27,7 @@ class VideoStream:
 
         """
         self.name = name
-        self.stream = webrtc_streamer(key="sample")(src)
+        self.stream = webrtc_streamer(key="sample")
         self.real_time = real_time
         self.frame_rate = self.stream.get(cv2.CAP_PROP_FPS)
         self.grabbed, self.frame = self.stream.read()
@@ -90,7 +90,7 @@ class WebcamVideoStream:
 
         """
         self.name = name
-        self.stream = webrtc_streamer(key="sample")(src)
+        self.stream = webrtc_streamer(key="sample")
         self.shape = shape
         if self.shape is not None:
             self.stream.set(3, shape[0])
