@@ -176,8 +176,8 @@ def main():
     # Load video source into a thread
     video_source = available_cameras[cam_id]
     ## Start video thread
-    video_thread = video_utils.WebcamVideoStream(video_source)
-    video_thread.start()
+    ##video_thread = video_utils.WebcamVideoStream(video_source)
+    ##video_thread.start()
     
     # Detection code
     try:
