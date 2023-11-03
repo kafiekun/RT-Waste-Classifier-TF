@@ -189,11 +189,11 @@ def main():
                         ##break
                     # Change color gammut to feed the frame into the network
                         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    output = run_inference_for_single_image(frame, sess, 
+                output = run_inference_for_single_image(frame, sess, 
                         detection_graph)
-                    output = discriminate_class(output, 
+                output = discriminate_class(output, 
                         classes_to_detect, category_index)
-                    processed_image = visualize_results(frame, output, 
+                processed_image = visualize_results(frame, output, 
                         category_index)
 
                     # Display the image with the detections in the Streamlit app
